@@ -70,15 +70,17 @@ def main():
         first_lang = src_lang if src_lang != "en" else tgt_lang
         second_lang = "en"
         if (first_lang, second_lang) not in seen and training_args.do_train:
-            train_raw_data["mmt"][f"{first_lang}-{second_lang}"] = load_dataset(
-                "json",  # or "parquet" if you saved it as .parquet
-                data_files=data_args.cpo_data_path,
-                split="train"
-                f"{first_lang}-{second_lang}",
-                cache_dir=model_args.cache_dir,
-                # use_auth_token=True if model_args.use_auth_token else None,
-                streaming=data_args.streaming,
-                )
+            # train_raw_data["mmt"][f"{first_lang}-{second_lang}"] = load_dataset(
+            #     data_args.cpo_data_path,
+            #     f"{first_lang}-{second_lang}",
+            #     cache_dir=model_args.cache_dir,
+            #     use_auth_token=True if model_args.use_auth_token else None,
+            #     streaming=data_args.streaming,
+            #     )
+
+            from datasets import load_from_disk
+            train_raw_data["mmt"][f"{first_lang}-{second_lang}"] = load_from_disk(data_args.cpo_data_path)
+
         seen.add((first_lang, second_lang))
     
     # load tokenizer
